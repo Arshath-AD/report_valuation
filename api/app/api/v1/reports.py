@@ -96,14 +96,12 @@ async def check_report_name(
 @router.post("/reports/{report_id}/import")
 async def import_report_files(
     report_id: str,
-    payload: ImportRequest,
     current_user: dict = Depends(get_current_user),
 ):
     """
-    Import selected files: OCR + translate and store file_content
+    Import all uploaded files under a report
     """
 
-    # Validate report
     report = ReportRepository.get_by_id(report_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
@@ -114,37 +112,52 @@ async def import_report_files(
     ):
         raise HTTPException(status_code=403, detail="Access denied")
 
-    imported_files = []
+    files = OriginalFileRepository.get_by_report(report_id)
 
-    for file_id in payload.file_ids:
-        file_doc = OriginalFileRepository.get_by_id(file_id)
-        if not file_doc:
-            continue
+    if not files:
+        raise HTTPException(
+            status_code=400,
+            detail="No files found for this report"
+        )
 
+    imported = []
+    skipped = []
+
+    for file_doc in files:
         file_path = file_doc.get("file_path")
+
         if not file_path or not os.path.exists(file_path):
+            skipped.append({
+                "file_id": file_doc["id"],
+                "reason": "File missing on disk"
+            })
             continue
 
-        # OCR + translate
+        if file_doc.get("file_content"):
+            skipped.append({
+                "file_id": file_doc["id"],
+                "reason": "Already imported"
+            })
+            continue
+
         final_text = await processing_service.import_document(file_path)
 
-        # Save content
         OriginalFileRepository.update_file_content(
-            file_id=file_id,
+            file_id=file_doc["id"],
             content=final_text,
             updated_by=current_user["id"]
         )
 
-        imported_files.append({
-            "file_id": file_id,
-            "file_name": file_doc.get("file_name")
+        imported.append({
+            "file_id": file_doc["id"],
+            "file_name": file_doc["file_name"]
         })
 
     return {
         "success": True,
         "report_id": report_id,
-        "imported_files": imported_files,
-        "message": "Files imported successfully"
+        "imported_files": imported,
+        "skipped_files": skipped
     }
 
 

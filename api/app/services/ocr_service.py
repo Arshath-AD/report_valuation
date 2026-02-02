@@ -6,43 +6,59 @@ import tempfile
 import os
 
 class OCRService:
-    def __init__(self, lang: str = "tam"):
+    def __init__(self, lang: str = "tam+eng"):
         self.lang = lang
-        if not os.getenv("TESSDATA_PREFIX"):
-            print("⚠️ Warning: TESSDATA_PREFIX not set. Tamil OCR may fail.")
 
-        if os.getenv("TESSERACT_PATH"):
-            pytesseract.pytesseract.tesseract_cmd = os.getenv("TESSERACT_PATH")
-    
-    def extract_text_from_pdf(self, pdf_path: str, dpi: int = 300) -> List[Tuple[int, str]]:
-        """Extract text from PDF page by page"""
+        # ✅ Explicit binary path (DO NOT read from env)
+        pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+
+        # ✅ Explicit tessdata path
+        os.environ["TESSDATA_PREFIX"] = "/usr/share/tesseract-ocr/5/tessdata/"
+
+    def extract_text_from_pdf(
+        self,
+        pdf_path: str,
+        dpi: int = 300
+    ) -> List[Tuple[int, str]]:
         pages = convert_from_path(pdf_path, dpi=dpi)
         results = []
-        
+
         for i, page in enumerate(pages, start=1):
-            text = pytesseract.image_to_string(page, lang=self.lang)
+            text = pytesseract.image_to_string(
+                page,
+                lang=self.lang
+            )
             results.append((i, text.strip()))
-        
+
         return results
-    
-    def extract_text_from_image(self, image_path: str) -> List[Tuple[int, str]]:
-        """Extract text from image"""
+
+    def extract_text_from_image(
+        self,
+        image_path: str
+    ) -> List[Tuple[int, str]]:
         image = Image.open(image_path)
-        text = pytesseract.image_to_string(image, lang=self.lang)
+        text = pytesseract.image_to_string(
+            image,
+            lang=self.lang
+        )
         return [(1, text.strip())]
-    
-    def extract_from_bytes(self, file_bytes: bytes, file_type: str) -> List[Tuple[int, str]]:
-        """Extract text from bytes (PDF or image)"""
-        with tempfile.NamedTemporaryFile(suffix=f".{file_type}", delete=False) as tmp:
+
+    def extract_from_bytes(
+        self,
+        file_bytes: bytes,
+        file_type: str
+    ) -> List[Tuple[int, str]]:
+        with tempfile.NamedTemporaryFile(
+            suffix=f".{file_type}",
+            delete=False
+        ) as tmp:
             tmp.write(file_bytes)
             tmp_path = tmp.name
-        
+
         try:
             if file_type == "pdf":
-                results = self.extract_text_from_pdf(tmp_path)
+                return self.extract_text_from_pdf(tmp_path)
             else:
-                results = self.extract_text_from_image(tmp_path)
+                return self.extract_text_from_image(tmp_path)
         finally:
             os.unlink(tmp_path)
-        
-        return results

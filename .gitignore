@@ -23,4 +23,7 @@ web_app/*.sw?
 web_app/.env
 api/.env
 venv/*
-venv
+env
+__pycache__/
+*.pyc
+api/uploads/

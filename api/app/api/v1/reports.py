@@ -96,12 +96,23 @@ async def check_report_name(
 @router.post("/reports/{report_id}/import")
 async def import_report_files(
     report_id: str,
+<<<<<<< HEAD
     current_user: dict = Depends(get_current_user),
 ):
     """
     Import all uploaded files under a report
     """
 
+=======
+    payload: ImportRequest,
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Import selected files: OCR + translate and store file_content
+    """
+
+    # Validate report
+>>>>>>> upstream/main
     report = ReportRepository.get_by_id(report_id)
     if not report:
         raise HTTPException(status_code=404, detail="Report not found")
@@ -112,6 +123,7 @@ async def import_report_files(
     ):
         raise HTTPException(status_code=403, detail="Access denied")
 
+<<<<<<< HEAD
     files = OriginalFileRepository.get_by_report(report_id)
 
     if not files:
@@ -144,20 +156,50 @@ async def import_report_files(
 
         OriginalFileRepository.update_file_content(
             file_id=file_doc["id"],
+=======
+    imported_files = []
+
+    for file_id in payload.file_ids:
+        file_doc = OriginalFileRepository.get_by_id(file_id)
+        if not file_doc:
+            continue
+
+        file_path = file_doc.get("file_path")
+        if not file_path or not os.path.exists(file_path):
+            continue
+
+        # OCR + translate
+        final_text = await processing_service.import_document(file_path)
+
+        # Save content
+        OriginalFileRepository.update_file_content(
+            file_id=file_id,
+>>>>>>> upstream/main
             content=final_text,
             updated_by=current_user["id"]
         )
 
+<<<<<<< HEAD
         imported.append({
             "file_id": file_doc["id"],
             "file_name": file_doc["file_name"]
+=======
+        imported_files.append({
+            "file_id": file_id,
+            "file_name": file_doc.get("file_name")
+>>>>>>> upstream/main
         })
 
     return {
         "success": True,
         "report_id": report_id,
+<<<<<<< HEAD
         "imported_files": imported,
         "skipped_files": skipped
+=======
+        "imported_files": imported_files,
+        "message": "Files imported successfully"
+>>>>>>> upstream/main
     }
 
 
@@ -334,4 +376,8 @@ async def get_file_contents(
             }
             for f in files
         ]
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> upstream/main

@@ -258,6 +258,7 @@ async def process_multiple_documents(
             detail="Failed to process documents"
         )
 
+
 @router.post("/process-from-path")
 async def process_document_from_path(request: DocumentRequest):
   """Process document from file path"""

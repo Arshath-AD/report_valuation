@@ -26,9 +26,6 @@ llm_service = LLMService()
 # Request Models
 # ----------------------
 
-class ImportRequest(BaseModel):
-    file_ids: list[str]
-
 class CreateReportRequest(BaseModel):
   report_name: str
   bank_name: str
@@ -169,6 +166,7 @@ async def import_report_files(
         "skipped_files": skipped_files,
         "message": "Import completed"
     }
+
 
 
 @router.post("/reports/analysis")

@@ -1,0 +1,17 @@
+name: subtract
+description: Subtract second number from first number
+
+inputSchema:
+  type: object
+  properties:
+    a:
+      type: integer
+    b:
+      type: integer
+  required:
+    - a
+    - b
+
+operation:
+  type: expression
+  expression: "a - b"

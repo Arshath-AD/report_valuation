@@ -1,0 +1,17 @@
+name: add
+description: Add two numbers
+
+inputSchema:
+  type: object
+  properties:
+    a:
+      type: integer
+    b:
+      type: integer
+  required:
+    - a
+    - b
+
+operation:
+  type: expression
+  expression: "a + b"

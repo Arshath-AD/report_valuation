@@ -143,11 +143,11 @@ export default function FileSidebar({
                         {node.type === 'folder' ? (
                             isDragOver ? (
                                 // Open folder icon while dragging over
-                                <FolderOpen size={16} className="text-blue-500 animate-pulse" />
+                                <FolderOpen size={16} className="text-brand-400 animate-pulse" />
                             ) : isExpanded ? (
-                                <FolderOpen size={16} className="text-blue-500" />
+                                <FolderOpen size={16} className="text-brand-400" />
                             ) : (
-                                <Folder size={16} className="text-blue-500" />
+                                <Folder size={16} className="text-brand-400" />
                             )
                         ) : (
                             <FileText size={16} className="text-slate-400 dark:text-slate-500" />
@@ -158,7 +158,7 @@ export default function FileSidebar({
 
                     {/* Drop indicator label */}
                     {isDragOver && isDropTarget && (
-                        <span className="text-xs font-semibold text-blue-500 flex-shrink-0 bg-blue-50 px-1.5 py-0.5 rounded">
+                        <span className="text-xs font-semibold text-brand-400 flex-shrink-0 bg-brand-500/10 px-1.5 py-0.5 rounded">
                             Drop here
                         </span>
                     )}
@@ -208,7 +208,7 @@ export default function FileSidebar({
             </div>
 
             {/* Drag hint banner — visible when any file is being dragged */}
-            <div className="px-4 py-2 bg-blue-50 border-b border-blue-100 text-xs text-blue-600 font-medium hidden drag-hint-banner">
+            <div className="px-4 py-2 bg-brand-500/10 border-b border-brand-500/20 text-xs text-brand-400 font-medium hidden drag-hint-banner">
                 📂 Drag files and drop onto a folder to move them
             </div>
 
@@ -222,7 +222,7 @@ export default function FileSidebar({
                         </p>
                         <button
                             onClick={() => onSearchChange('')}
-                            className="mt-4 text-xs text-blue-500 hover:text-blue-700 underline underline-offset-2"
+                            className="mt-4 text-xs text-brand-400 hover:text-brand-300 underline underline-offset-2"
                         >
                             Clear search
                         </button>

@@ -87,7 +87,7 @@ export default function UploadStep({
         </h2>
         <p className="text-slate-500 mt-2">
           Adding files to{' '}
-          <span className="font-semibold text-blue-600 dark:text-blue-400">
+          <span className="font-semibold text-white">
             {projectName}
           </span>
         </p>
@@ -101,15 +101,12 @@ export default function UploadStep({
 
           {/* Drop Zone */}
           <div
-            className={`
-    relative border-2 border-dashed rounded-2xl p-8
-    transition-all duration-200 cursor-pointer
-    flex flex-col items-center justify-center
-    ${dragActive
-                ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/30'
-                : 'border-gray-300 dark:border-gray-700 hover:border-blue-400 hover:bg-gray-50/50 dark:hover:bg-gray-800/30'
+            className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center p-12 transition-all cursor-pointer
+              ${dragActive
+                ? 'border-brand-500 bg-brand-500/10'
+                : 'border-slate-700/50 hover:border-brand-500/50 hover:bg-slate-800/30'
               }
-  `}
+            `}
             onDragEnter={handleDrag}
             onDragOver={handleDrag}
             onDragLeave={handleDrag}
@@ -126,16 +123,16 @@ export default function UploadStep({
             />
 
             {/* Icon */}
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg mb-4">
-              <UploadIcon size={20} className="text-white" />
+            <div className="w-14 h-14 rounded-2xl bg-slate-800 border border-slate-700/50 flex items-center justify-center shadow-lg mb-4">
+              <UploadIcon size={20} className="text-brand-400" />
             </div>
 
             {/* Text Content */}
             <div className="text-center space-y-2">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-white">
                 Drop your files here
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm">
+              <p className="text-sm text-slate-400 max-w-sm">
                 Supports PDF and image files • Max 50MB per file
               </p>
             </div>
@@ -144,11 +141,12 @@ export default function UploadStep({
             <button
               type="button"
               className="mt-6 px-8 py-2.5 rounded-xl font-medium text-sm
-      bg-gray-900 dark:bg-white
-      text-white dark:text-gray-900
-      hover:bg-gray-800 dark:hover:bg-gray-100
-      transition-all duration-200
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      bg-slate-800
+      text-slate-200
+      border border-slate-700/50
+      hover:bg-brand-600 hover:text-white hover:border-brand-500
+      transition-all duration-200 shadow-lg
+      focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
             >
               Browse Files
             </button>
@@ -163,13 +161,12 @@ export default function UploadStep({
             ].map((item, index) => (
               <div
                 key={index}
-                className="p-6 rounded-xl bg-white dark:bg-slate-900
-                border border-slate-200 dark:border-slate-800
-                hover:border-blue-400 transition
+                className="p-6 rounded-xl bg-slate-900/40 backdrop-blur-xl border border-slate-700/50
+                hover:border-brand-500/40 transition
                 flex flex-col items-center gap-3 text-center"
               >
-                <item.icon size={28} className="text-blue-500" />
-                <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                <item.icon size={28} className="text-brand-400" />
+                <span className="text-sm font-semibold text-white">
                   {item.label}
                 </span>
               </div>
@@ -178,13 +175,13 @@ export default function UploadStep({
         </div>
 
         {/* ---------------- Sidebar ---------------- */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 h-fit">
+        <div className="bg-slate-900/40 backdrop-blur-xl rounded-xl border border-slate-700/50 p-6 h-fit text-white">
 
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+            <h3 className="text-sm font-bold text-white">
               Uploaded Files
             </h3>
-            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+            <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-slate-800 text-brand-400 border border-slate-700/50">
               {files.length}
             </span>
           </div>
@@ -198,17 +195,17 @@ export default function UploadStep({
               {files.map((file) => (
                 <div
                   key={file.id}
-                  className="group flex items-center gap-3 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  className="group flex items-center gap-3 p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700 transition"
                 >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-900 text-brand-400 border border-slate-700/50">
                     <FileText size={16} />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold truncate text-slate-900 dark:text-white">
+                    <p className="text-xs font-semibold truncate text-white">
                       {file.name || file.file?.name}
                     </p>
-                    <span className="text-xs text-slate-500">
+                    <span className="text-xs text-slate-400">
                       {file.fileSize}
                     </span>
                   </div>
@@ -220,7 +217,7 @@ export default function UploadStep({
                           e.stopPropagation();
                           onDownload(file);
                         }}
-                        className="p-1.5 text-slate-400 hover:text-blue-600"
+                        className="p-1.5 text-slate-400 hover:text-brand-400"
                       >
                         <Download size={14} />
                       </button>
@@ -245,11 +242,11 @@ export default function UploadStep({
             <button
               onClick={onNext}
               className="w-full mt-6 py-3 rounded-lg
-              bg-gradient-to-r from-blue-600 to-blue-700
-              hover:from-blue-700 hover:to-blue-800
-              text-white font-semibold
+              bg-white text-slate-900
+              hover:bg-slate-200
+              font-semibold
               flex items-center justify-center gap-2
-              shadow-md hover:shadow-lg transition"
+              shadow-lg hover:shadow-xl transition"
             >
               Continue
               <ArrowRight size={16} />

@@ -6,17 +6,17 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#eef5ff',
-          100: '#d9e8ff',
-          200: '#bbd5ff',
-          300: '#8eb8ff',
-          400: '#5b95ff',
-          500: '#3370ff',
-          600: '#0052cc', // Primary Action — Professional Blue
-          700: '#0042a6',
-          800: '#003380',
-          900: '#00245e',
-          950: '#001338',
+          50: '#f5f3ff',
+          100: '#ede9fe',
+          200: '#ddd6fe',
+          300: '#c4b5fd',
+          400: '#a78bfa',
+          500: '#8b5cf6',
+          600: '#7c3aed', // Primary Action — Violet
+          700: '#6d28d9',
+          800: '#5b21b6',
+          900: '#4c1d95',
+          950: '#2e1065',
         },
         secondary: {
           50: '#f8fafc',
@@ -107,6 +107,7 @@ export default {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'dot-pattern': 'radial-gradient(circle, #94a3b8 1px, transparent 1px)',
         'dot-pattern-dark': 'radial-gradient(circle, #334155 1.5px, transparent 1.5px)',
+        'leaves': "url('/background-leaves.jpg')",
       },
       backgroundSize: {
         'dot-sm': '16px 16px',

@@ -21,7 +21,7 @@ export const UserActionBar: React.FC<UserActionBarProps> = ({
                     placeholder="Search users..."
                     value={searchTerm}
                     onChange={(e) => onSearchChange(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-night-900 border border-brand-200 dark:border-night-800 rounded-xl text-base focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none shadow-sm transition-all font-medium text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-600"
+                    className="w-full pl-10 pr-4 py-2.5 bg-slate-900/60 backdrop-blur-xl border border-slate-700/50 rounded-xl text-base focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none shadow-sm transition-all font-medium text-white placeholder:text-slate-400"
                 />
             </div>
 

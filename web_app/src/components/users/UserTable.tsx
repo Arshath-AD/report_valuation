@@ -21,7 +21,7 @@ export const UserTable: React.FC<UserTableProps> = ({
 }) => {
     if (isLoading) {
         return (
-            <div className="bg-slate-50/50 dark:bg-night-950/50 rounded-2xl border border-brand-100 dark:border-night-800 p-12 text-center">
+            <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-12 text-center">
                 <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mb-4"></div>
                 <p className="text-slate-500 dark:text-slate-400 text-sm">Loading users...</p>
             </div>
@@ -30,11 +30,11 @@ export const UserTable: React.FC<UserTableProps> = ({
 
     if (users.length === 0) {
         return (
-            <div className="bg-slate-50/50 dark:bg-night-950/50 rounded-2xl border border-brand-100 dark:border-night-800 p-12 text-center flex flex-col items-center">
-                <div className="h-16 w-16 bg-white dark:bg-night-800 rounded-2xl shadow-sm border border-brand-100 dark:border-night-700 flex items-center justify-center mb-6">
+            <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 p-12 text-center flex flex-col items-center">
+                <div className="h-16 w-16 bg-slate-800 rounded-2xl shadow-sm border border-slate-700/50 flex items-center justify-center mb-6">
                     <Users className="h-8 w-8 text-brand-400 dark:text-brand-500" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                <h3 className="text-lg font-bold text-white mb-2">
                     {searchTerm ? 'No matching users found' : 'No users yet'}
                 </h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-sm mx-auto">
@@ -54,11 +54,11 @@ export const UserTable: React.FC<UserTableProps> = ({
     }
 
     return (
-        <div className="bg-white dark:bg-night-900 rounded-2xl border border-brand-100 dark:border-night-800 overflow-hidden shadow-sm">
+        <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl">
             <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
-                        <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
+                        <tr className="border-b border-slate-700/50 bg-slate-800/80">
                             <th className="px-6 py-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                                 User
                             </th>
@@ -70,17 +70,17 @@ export const UserTable: React.FC<UserTableProps> = ({
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    <tbody className="divide-y divide-slate-700/50">
                         {users.map((user) => (
-                            <tr key={user.id} className="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <tr key={user.id} className="group hover:bg-slate-700/30 transition-colors">
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 font-medium text-sm">
+                                        <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-300 font-medium text-sm">
                                             {user.first_name?.[0]?.toUpperCase()}
                                             {user.last_name?.[0]?.toUpperCase()}
                                         </div>
                                         <div>
-                                            <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                            <p className="text-sm font-bold text-white">
                                                 {user.first_name} {user.last_name}
                                             </p>
                                             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{user.email}</p>
@@ -94,8 +94,8 @@ export const UserTable: React.FC<UserTableProps> = ({
                                                 <span
                                                     key={role}
                                                     className={`px-2.5 py-1 text-xs font-medium rounded-full border ${role === 'admin'
-                                                        ? 'bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-800'
-                                                        : 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800'
+                                                        ? 'bg-purple-900/20 text-purple-400 border-purple-800'
+                                                        : 'bg-blue-900/20 text-blue-400 border-blue-800'
                                                         }`}
                                                 >
                                                     {role.charAt(0).toUpperCase() + role.slice(1)}

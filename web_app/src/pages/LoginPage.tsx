@@ -2,13 +2,11 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
-import { LogIn, Eye, EyeOff, BarChart3, Shield, Zap, Sun, Moon } from 'lucide-react';
-import { useAppContext } from '../app/providers';
+import { LogIn, Eye, EyeOff, BarChart3, Shield, Zap } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { login, loginLoading } = useAuth();
-  const { theme, toggleTheme } = useAppContext();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,28 +25,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-700 via-brand-800 to-secondary-900 dark:from-slate-950 dark:via-slate-900 dark:to-secondary-950 p-4 relative overflow-hidden">
-      {/* Animated Background Blobs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-brand-400 dark:bg-brand-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-20 dark:opacity-10 animate-blob" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-brand-500 dark:bg-indigo-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-20 dark:opacity-10 animate-blob animation-delay-2000" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-300 dark:bg-brand-800 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-3xl opacity-20 dark:opacity-10 animate-blob animation-delay-4000" />
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-leaves bg-cover bg-center bg-no-repeat p-4 relative overflow-hidden">
+      {/* Dark Overlay for better contrast */}
+      <div className="absolute inset-0 bg-brand-900/40 mix-blend-overlay pointer-events-none z-0"></div>
 
-      {/* Theme Toggle — top right */}
-      <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 z-50 flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 dark:bg-slate-800/80 backdrop-blur-md border border-white/20 dark:border-slate-700 text-white/80 dark:text-slate-300 hover:bg-white/20 dark:hover:bg-slate-700 transition-all shadow-lg"
-        title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-      >
-        <span className="relative w-4 h-4">
-          <Moon size={16} className={`absolute inset-0 transition-all duration-300 ${theme === 'light' ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`} />
-          <Sun size={16} className={`absolute inset-0 transition-all duration-300 ${theme === 'dark' ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`} />
-        </span>
-        <span className="text-xs font-semibold hidden sm:block">{theme === 'light' ? 'Dark' : 'Light'}</span>
-      </button>
 
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-12 items-center relative z-10">
         {/* Left Side — Branding */}

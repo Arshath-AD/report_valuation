@@ -1,10 +1,11 @@
 // app/providers.tsx
-import { ReactNode, createContext, useContext, useState } from "react";
+// Theme is permanently set to dark mode.
+import { ReactNode, createContext, useContext, useState, useEffect } from "react";
 
 interface AppContextType {
   user: null | { id: string; name: string };
   setUser: (user: AppContextType["user"]) => void;
-  theme: 'light' | 'dark';
+  theme: 'dark';
   toggleTheme: () => void;
 }
 
@@ -24,30 +25,22 @@ interface AppProviderProps {
 
 export function AppProvider({ children }: AppProviderProps) {
   const [user, setUser] = useState<AppContextType["user"]>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-  };
+  // Always force dark mode
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
+  }, []);
 
-  // Initialize theme class on mount
-  useState(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-  });
+  // no-op — dark is always the theme
+  const toggleTheme = () => { };
 
   return (
     <AppContext.Provider
       value={{
         user,
         setUser,
-        theme,
+        theme: 'dark',
         toggleTheme,
       }}
     >

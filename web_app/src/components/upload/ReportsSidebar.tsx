@@ -32,14 +32,14 @@ export default function ReportsSidebar({ selectedReportId, onReportSelect }: Rep
     const reports = reportsData?.reports || [];
 
     return (
-        <div className="h-full bg-white dark:bg-slate-900 flex flex-col">
+        <div className="h-full bg-slate-900/40 backdrop-blur-xl border-r border-slate-700/50 flex flex-col">
             {/* Header */}
-            <div className="p-6 border-b border-secondary-800 bg-secondary-900">
+            <div className="p-6 border-b border-slate-700/50 bg-slate-800/40">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2 tracking-tight">
                     <FileText size={24} className="text-brand-400" />
                     All Reports
                 </h2>
-                <p className="text-secondary-400 text-sm mt-1 font-medium">
+                <p className="text-slate-400 text-sm mt-1 font-medium">
                     {reports.length} {reports.length === 1 ? 'report' : 'reports'} available
                 </p>
             </div>
@@ -48,9 +48,9 @@ export default function ReportsSidebar({ selectedReportId, onReportSelect }: Rep
             <div className="flex-1 overflow-y-auto">
                 {reports.length === 0 ? (
                     <div className="p-6 text-center">
-                        <FileText className="mx-auto text-gray-400 mb-3" size={48} />
-                        <p className="text-gray-600 font-medium">No reports yet</p>
-                        <p className="text-gray-500 text-sm mt-1">Create your first report to get started</p>
+                        <FileText className="mx-auto text-slate-500 mb-3" size={48} />
+                        <p className="text-slate-400 font-medium">No reports yet</p>
+                        <p className="text-slate-500 text-sm mt-1">Create your first report to get started</p>
                     </div>
                 ) : (
                     <div className="p-4 space-y-2">
@@ -59,38 +59,38 @@ export default function ReportsSidebar({ selectedReportId, onReportSelect }: Rep
 
                             const badgeClass =
                                 status === 'approved'
-                                    ? 'bg-emerald-100 text-emerald-800'
+                                    ? 'bg-emerald-900/30 text-emerald-400 border border-emerald-800/50'
                                     : status === 'review'
-                                        ? 'bg-orange-100 text-orange-800'
-                                        : 'bg-secondary-100 text-secondary-800';
+                                        ? 'bg-orange-900/30 text-orange-400 border border-orange-800/50'
+                                        : 'bg-slate-800 text-slate-300 border border-slate-700/50';
 
                             return (
                                 <button
                                     key={report.id}
                                     onClick={() => onReportSelect(report.id)}
-                                    className={`w-full text-left p-4 rounded-xl border transition-all group hover:shadow-soft ${selectedReportId === report.id
-                                            ? 'border-brand-500 bg-brand-50 shadow-sm'
-                                            : 'border-secondary-100 hover:border-brand-300 bg-white'
+                                    className={`w-full text-left p-4 rounded-xl border transition-all group hover:shadow-lg ${selectedReportId === report.id
+                                        ? 'border-brand-500 bg-slate-800/80 shadow-md'
+                                        : 'border-slate-700/50 hover:border-brand-500/50 bg-slate-900/60'
                                         }`}
                                 >
                                     <div className="flex items-start justify-between gap-2">
                                         <div className="flex-1 min-w-0">
                                             <h3
                                                 className={`font-semibold truncate ${selectedReportId === report.id
-                                                        ? 'text-brand-900'
-                                                        : 'text-secondary-900 group-hover:text-brand-800'
+                                                    ? 'text-brand-400'
+                                                    : 'text-white group-hover:text-brand-300'
                                                     }`}
                                             >
                                                 {report.report_name || report.name}
                                             </h3>
 
                                             {report.bank_name && (
-                                                <p className="text-sm text-secondary-500 mt-1 truncate">{report.bank_name}</p>
+                                                <p className="text-sm text-slate-400 mt-1 truncate">{report.bank_name}</p>
                                             )}
 
                                             <div className="flex items-center gap-2 mt-2">
-                                                <Calendar size={14} className="text-secondary-400" />
-                                                <span className="text-xs text-secondary-500">{formatDate(report.created_at)}</span>
+                                                <Calendar size={14} className="text-slate-500" />
+                                                <span className="text-xs text-slate-400">{formatDate(report.created_at)}</span>
                                             </div>
 
                                             <div className="mt-2">
@@ -103,8 +103,8 @@ export default function ReportsSidebar({ selectedReportId, onReportSelect }: Rep
                                         <ChevronRight
                                             size={20}
                                             className={`flex-shrink-0 transition-transform ${selectedReportId === report.id
-                                                    ? 'text-brand-600 translate-x-1'
-                                                    : 'text-secondary-300 group-hover:text-brand-500 group-hover:translate-x-1'
+                                                ? 'text-brand-400 translate-x-1'
+                                                : 'text-slate-500 group-hover:text-brand-400 group-hover:translate-x-1'
                                                 }`}
                                         />
                                     </div>

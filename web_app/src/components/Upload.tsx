@@ -419,17 +419,17 @@ export default function Upload() {
 
   return (
     <div className="h-full">
-      <div className="bg-white dark:bg-night-900 rounded-2xl border border-brand-100 dark:border-night-800 shadow-lg dark:shadow-none overflow-hidden">
+      <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-white dark:bg-night-900/95 backdrop-blur-xl border-b border-slate-100 dark:border-night-700">
+        <header className="sticky top-0 z-40 bg-slate-800/80 backdrop-blur-xl border-b border-slate-700/50">
           <div className="w-full mx-auto px-2 sm:px-3 lg:px-4 py-3">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
               {/* Title */}
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg flex items-center justify-center">
-                  <Plus className="text-white" size={24} />
+                <div className="w-12 h-12 bg-slate-800 rounded-2xl shadow-lg border border-slate-700/50 flex items-center justify-center">
+                  <Plus className="text-brand-400" size={24} />
                 </div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-white">
                   New Report
                 </h1>
               </div>
@@ -442,12 +442,12 @@ export default function Upload() {
               )}
 
               {/* View Mode Toggle */}
-              <div className="flex gap-2 bg-slate-100 dark:bg-night-800 p-1 rounded-xl">
+              <div className="flex gap-2 bg-slate-800/50 p-1 rounded-xl">
                 <button
                   onClick={() => setViewMode('upload')}
                   className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${viewMode === 'upload'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-200'
+                    ? 'bg-slate-700/80 text-brand-400 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
                     }`}
                 >
                   <LayoutGrid size={16} />
@@ -456,8 +456,8 @@ export default function Upload() {
                 <button
                   onClick={() => setViewMode('browse')}
                   className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${viewMode === 'browse'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-200'
+                    ? 'bg-slate-700/80 text-brand-400 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
                     }`}
                 >
                   <History size={16} />
@@ -472,13 +472,13 @@ export default function Upload() {
         <main className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 py-8">
           {viewMode === 'browse' ? (
             <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 h-[calc(100vh-16rem)]">
-              <div className="bg-white dark:bg-night-900 rounded-2xl shadow-lg border border-slate-200 dark:border-night-700 overflow-hidden">
+              <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden">
                 <ReportsSidebar
                   selectedReportId={selectedBrowseReportId}
                   onReportSelect={setSelectedBrowseReportId}
                 />
               </div>
-              <div className="bg-white dark:bg-night-900 rounded-2xl shadow-lg border border-slate-200 dark:border-night-700 overflow-hidden">
+              <div className="bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 overflow-hidden">
                 <ReportDetailView reportId={selectedBrowseReportId} />
               </div>
             </div>

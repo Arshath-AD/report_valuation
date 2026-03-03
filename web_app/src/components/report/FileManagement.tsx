@@ -221,9 +221,9 @@ export default function FileManagement({
 
     return (
         <div className="h-full flex flex-col">
-            <div className="flex-1 flex flex-col bg-white dark:bg-night-900 rounded-2xl border border-brand-100 dark:border-night-800 shadow-lg dark:shadow-none overflow-hidden">
-                <div className="p-6 border-b border-slate-100 dark:border-night-700 bg-white dark:bg-night-900">
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white">File Management</h1>
+            <div className="flex-1 flex flex-col bg-slate-900/60 backdrop-blur-xl rounded-2xl border border-slate-700/50 shadow-2xl overflow-hidden">
+                <div className="p-6 border-b border-slate-700/50 bg-slate-800/40">
+                    <h1 className="text-3xl font-bold text-white">File Management</h1>
                     <p className="text-slate-500 dark:text-slate-300 mt-2">Browse and manage valuation reports</p>
                     {draggedFile && (
                         <p className="text-xs text-brand-500 dark:text-brand-400 mt-1 animate-pulse">
@@ -246,22 +246,22 @@ export default function FileManagement({
                     />
 
                     {/* Main Content */}
-                    <div className="flex-1 bg-slate-50 dark:bg-night-950 overflow-auto">
+                    <div className="flex-1 bg-transparent overflow-auto">
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-6">
                                 <div>
-                                    <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
+                                    <h2 className="text-xl font-semibold text-white">
                                         {selectedNode ? selectedNode.name : 'Select a folder or file'}
                                     </h2>
                                     {selectedNode && (
-                                        <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
+                                        <p className="text-sm text-slate-400 mt-1">
                                             {selectedNode.type === 'folder' ? 'Folder' : 'File'} • {selectedFiles.length} items
                                         </p>
                                     )}
                                 </div>
                                 <button
                                     onClick={() => setViewMode(m => m === 'grid' ? 'list' : 'grid')}
-                                    className="flex items-center gap-2 px-4 py-2 border border-slate-200 dark:border-night-700 rounded-xl bg-white dark:bg-night-800 hover:bg-slate-50 dark:hover:bg-night-700 text-slate-600 dark:text-slate-300 transition-all shadow-sm"
+                                    className="flex items-center gap-2 px-4 py-2 border border-slate-700/50 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-all shadow-sm"
                                 >
                                     <Filter size={16} />
                                     <span className="text-sm font-medium">

@@ -55,12 +55,12 @@ export const ReactSelectField: React.FC<ReactSelectFieldProps> = ({
         ...base,
         minHeight: '48px',
         borderRadius: '12px',
-        backgroundColor: 'var(--select-bg, #f8fafc)',
-        borderColor: state.isFocused ? '#3b82f6' : '#e2e8f0',
-        boxShadow: state.isFocused ? '0 0 0 2px rgba(59,130,246,0.2)' : 'none',
+        backgroundColor: 'rgba(30, 41, 59, 0.8)', // slate-800/80
+        borderColor: state.isFocused ? '#8b5cf6' : 'rgba(51, 65, 85, 0.5)', // brand-500 : slate-700/50
+        boxShadow: state.isFocused ? '0 0 0 2px rgba(139, 92, 246, 0.2)' : 'none',
         transition: 'all 0.2s ease',
         '&:hover': {
-          borderColor: '#3b82f6',
+          borderColor: '#8b5cf6', // brand-500
         },
       }),
       valueContainer: (base) => ({
@@ -72,50 +72,74 @@ export const ReactSelectField: React.FC<ReactSelectFieldProps> = ({
         borderRadius: '12px',
         overflow: 'hidden',
         zIndex: 50,
+        backgroundColor: '#0f172a', // slate-900
+        border: '1px solid rgba(51, 65, 85, 0.5)', // slate-700/50
       }),
       option: (base, state) => ({
         ...base,
         backgroundColor: state.isSelected
-          ? '#e2e8f0'
+          ? 'rgba(139, 92, 246, 0.2)' // brand-500/20
           : state.isFocused
-            ? '#f1f5f9'
-            : 'white',
-        color: '#1e293b',
+            ? 'rgba(30, 41, 59, 0.8)' // slate-800/80
+            : 'transparent',
+        color: state.isSelected ? '#a78bfa' : '#cbd5e1', // brand-400 : slate-300
         cursor: 'pointer',
         transition: 'background-color 0.2s ease',
       }),
       multiValue: (base) => ({
         ...base,
-        backgroundColor: '#e2e8f0',
+        backgroundColor: 'rgba(30, 41, 59, 0.8)', // slate-800/80
+        border: '1px solid rgba(51, 65, 85, 0.5)',
         borderRadius: '8px',
       }),
       multiValueLabel: (base) => ({
         ...base,
         padding: '4px 8px',
+        color: '#f8fafc', // slate-50
       }),
       multiValueRemove: (base) => ({
         ...base,
         borderRadius: '0 8px 8px 0',
+        color: '#94a3b8', // slate-400
         '&:hover': {
-          backgroundColor: '#cbd5e1',
-          color: '#475569',
+          backgroundColor: 'rgba(239, 68, 68, 0.2)', // red-500/20
+          color: '#ef4444', // red-500
         },
       }),
       placeholder: (base) => ({
         ...base,
-        color: '#94a3b8',
+        color: '#64748b', // slate-500
       }),
       indicatorSeparator: (base) => ({
         ...base,
-        backgroundColor: '#e2e8f0',
+        backgroundColor: 'rgba(51, 65, 85, 0.5)', // slate-700/50
       }),
       // Add this to style the input container
       input: (base) => ({
         ...base,
+        color: '#f8fafc', // text-white
         '& input': {
           boxShadow: 'none !important',
           outline: 'none !important',
         },
+      }),
+      singleValue: (base) => ({
+        ...base,
+        color: '#f8fafc', // text-white
+      }),
+      dropdownIndicator: (base) => ({
+        ...base,
+        color: '#64748b', // slate-500
+        '&:hover': {
+          color: '#94a3b8', // slate-400
+        }
+      }),
+      clearIndicator: (base) => ({
+        ...base,
+        color: '#64748b', // slate-500
+        '&:hover': {
+          color: '#ef4444', // red-500
+        }
       }),
     }),
     []

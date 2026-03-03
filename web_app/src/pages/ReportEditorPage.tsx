@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import ReportEditor from '../components/report/ReportEditor';
-import { useReport } from '../hooks/useReports';
+import { useReport, useUpdateReport } from '../hooks/useReports';
 import { ValuationReport } from '../types';
 import { mapApiReportToValuation } from '../utils/reportMapper';
 import Loader from '../components/common/Loader';
@@ -17,14 +17,31 @@ export default function ReportEditorPage() {
     navigate('/files');
   };
 
+  const { mutate: updateReport } = useUpdateReport();
+
   const handleSave = async (_reportId: string, content: ValuationReport['content']) => {
     // In a real app, we would send this to the backend
     console.log('Saving report content:', content);
     // updateReportMutation.mutate({ reportId, data: { content } });
   };
 
-  const handleNewReport = () => {
-    navigate('/upload');
+  const handleApprove = (reportId: string) => {
+    if (!selectedReport) return;
+
+    updateReport(
+      {
+        reportId,
+        data: {
+          report_name: selectedReport.customerName,
+          report_status: 'approved',
+        },
+      },
+      {
+        onSuccess: () => {
+          navigate('/files');
+        },
+      }
+    );
   };
 
   if (isLoading) {
@@ -51,7 +68,7 @@ export default function ReportEditorPage() {
       report={selectedReport}
       onBack={handleBack}
       onSave={handleSave}
-      onNewReport={handleNewReport}
+      onApprove={handleApprove}
     />
   );
 }

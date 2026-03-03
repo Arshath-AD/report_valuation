@@ -119,7 +119,7 @@ export default function ProjectNameStep({
         </p>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-8 space-y-6">
+      <div className="bg-slate-900/60 backdrop-blur-xl rounded-2xl shadow-sm border border-slate-700/50 p-8 space-y-6">
         {/* Bank Name Input */}
         <div className="space-y-2">
           <label className="text-sm font-semibold text-slate-700 dark:text-slate-300">
@@ -127,7 +127,7 @@ export default function ProjectNameStep({
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none z-10">
-              <Building2 size={18} className="text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <Building2 size={18} className="text-slate-500 group-focus-within:text-brand-400 transition-colors" />
             </div>
             <ReactSelectField
               options={allBankOptions}
@@ -147,7 +147,7 @@ export default function ProjectNameStep({
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <FileText size={18} className="text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <FileText size={18} className="text-slate-500 group-focus-within:text-brand-400 transition-colors" />
             </div>
             <input
               type="text"
@@ -155,7 +155,7 @@ export default function ProjectNameStep({
               onChange={(e) => setProjectName(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleProjectNameSubmit()}
               placeholder="e.g. Valuation Report - Jan 2024"
-              className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder-slate-400 dark:text-white"
+              className="w-full pl-10 pr-4 py-3 bg-slate-800/80 border border-slate-700/50 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder-slate-500 text-white"
             />
           </div>
         </div>
@@ -163,7 +163,7 @@ export default function ProjectNameStep({
         <button
           onClick={handleProjectNameSubmit}
           disabled={!projectName?.trim() || !bankName?.trim()}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white px-6 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40"
+          className="w-full bg-brand-600 hover:bg-brand-500 disabled:bg-slate-800/40 disabled:text-slate-500 disabled:border disabled:border-slate-700/30 disabled:shadow-none disabled:cursor-not-allowed text-white px-6 py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40"
         >
           Create Report
           <ArrowRight size={18} />

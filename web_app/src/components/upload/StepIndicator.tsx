@@ -21,7 +21,7 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
 
                 {/* Connecting Line - Progress */}
                 <div
-                    className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-blue-600 dark:bg-blue-500 transition-all duration-500 -z-10"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-brand-500 transition-all duration-500 -z-10 shadow-[0_0_10px_rgba(139,92,246,0.3)]"
                     style={{ width: `${((currentStep - 1) / (steps.length - 1)) * 100}%` }}
                 />
 
@@ -31,15 +31,15 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
                     const isCurrent = currentStep === step.num;
 
                     return (
-                        <div key={step.num} className="flex flex-col items-center gap-2 bg-white dark:bg-slate-900 px-2">
+                        <div key={step.num} className="flex flex-col items-center gap-2 bg-transparent px-2">
                             <div
                                 className={`
                                     w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 border-2
                                     ${isCompleted
-                                        ? 'bg-blue-600 border-blue-600 text-white'
+                                        ? 'bg-slate-800 border-brand-500 text-brand-400 shadow-[0_0_15px_rgba(139,92,246,0.2)]'
                                         : isCurrent
-                                            ? 'bg-white dark:bg-slate-800 border-blue-600 text-blue-600 scale-110 shadow-lg shadow-blue-500/20'
-                                            : 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-400'
+                                            ? 'bg-slate-800/80 border-brand-500 text-brand-400 scale-110 shadow-lg shadow-brand-500/20'
+                                            : 'bg-slate-800/80 border-slate-600 text-slate-400'
                                     }
                                 `}
                             >

@@ -418,58 +418,43 @@ export default function Upload() {
   // ==================== RENDER ====================
 
   return (
-    <div className="h-full">
-      <div className="bg-white dark:bg-night-900 rounded-2xl border border-brand-100 dark:border-night-800 shadow-lg dark:shadow-none overflow-hidden">
-        {/* Header */}
-        <header className="sticky top-0 z-40 bg-white dark:bg-night-900/95 backdrop-blur-xl border-b border-slate-100 dark:border-night-700">
-          <div className="w-full mx-auto px-2 sm:px-3 lg:px-4 py-3">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-              {/* Title */}
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg flex items-center justify-center">
-                  <Plus className="text-white" size={24} />
-                </div>
-                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                  New Report
-                </h1>
-              </div>
+    <div className="h-full flex flex-col w-full animate-in fade-in duration-500">
+      {/* View Mode Toggle - Docked Top Right */}
+      <div className="w-full flex justify-end">
+        <div className="flex gap-1 bg-white dark:bg-night-900 p-1.5 rounded-t-2xl shadow-sm border border-b-0 border-brand-100 dark:border-night-800 relative top-[1px] z-10">
+          <button
+            onClick={() => setViewMode('upload')}
+            className={`px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${viewMode === 'upload'
+              ? 'bg-blue-600 dark:bg-blue-600 text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+              }`}
+          >
+            <LayoutGrid size={18} />
+            Wizard
+          </button>
+          <button
+            onClick={() => setViewMode('browse')}
+            className={`px-5 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${viewMode === 'browse'
+              ? 'bg-blue-600 dark:bg-blue-600 text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50'
+              }`}
+          >
+            <History size={18} />
+            History
+          </button>
+        </div>
+      </div>
 
-              {/* Step Indicator */}
-              {viewMode === 'upload' && (
-                <div className="mt-6">
-                  <StepIndicator currentStep={currentStep} />
-                </div>
-              )}
-
-              {/* View Mode Toggle */}
-              <div className="flex gap-2 bg-slate-100 dark:bg-night-800 p-1 rounded-xl">
-                <button
-                  onClick={() => setViewMode('upload')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${viewMode === 'upload'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-200'
-                    }`}
-                >
-                  <LayoutGrid size={16} />
-                  Wizard
-                </button>
-                <button
-                  onClick={() => setViewMode('browse')}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all flex items-center gap-2 ${viewMode === 'browse'
-                    ? 'bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-200'
-                    }`}
-                >
-                  <History size={16} />
-                  History
-                </button>
-              </div>
-            </div>
+      <div className="w-full bg-white dark:bg-night-900 rounded-3xl rounded-tr-none border border-brand-100 dark:border-night-800 shadow-xl dark:shadow-none pb-8 relative z-0">
+        {/* Step Indicator */}
+        {viewMode === 'upload' && (
+          <div className="pt-10 pb-4 w-full max-w-4xl px-4 lg:px-8 mx-auto">
+            <StepIndicator currentStep={currentStep} />
           </div>
-        </header>
+        )}
 
         {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 py-8">
+        <main className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
           {viewMode === 'browse' ? (
             <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 h-[calc(100vh-16rem)]">
               <div className="bg-white dark:bg-night-900 rounded-2xl shadow-lg border border-slate-200 dark:border-night-700 overflow-hidden">

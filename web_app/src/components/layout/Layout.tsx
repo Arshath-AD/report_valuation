@@ -84,7 +84,7 @@ export default function Layout() {
       {/* Top Header Bar */}
       <header className={`
         h-16 flex items-center justify-between px-6 transition-all duration-300 z-30 shrink-0
-        bg-gradient-to-r from-brand-800 via-brand-900 to-brand-950
+        bg-gradient-to-r from-brand-700 via-brand-800 to-brand-900
         dark:bg-night-900 dark:[background-image:none] backdrop-blur-md
         border-b border-brand-700 dark:border-night-700
         shadow-sm shadow-brand-900/50 dark:shadow-none
@@ -148,14 +148,13 @@ export default function Layout() {
         {/* Sidebar */}
         <aside
           className={`
-            flex flex-col h-[calc(100vh-6rem)] z-40 transition-all duration-300 ease-in-out
-            border border-brand-700/30 dark:border-night-700
-            bg-gradient-to-b from-brand-800 via-brand-900 to-brand-950 dark:bg-gradient-to-b dark:from-night-900 dark:to-night-950
+            flex flex-col h-full z-40 transition-all duration-300 ease-in-out
+            border-r border-brand-700/30 dark:border-night-700
+            bg-gradient-to-b from-brand-700 via-brand-800 to-brand-900 dark:bg-gradient-to-b dark:from-night-900 dark:to-night-950
             shadow-xl shadow-brand-900/20 dark:shadow-none
-            fixed lg:static
-            my-4 ml-4 mb-4 rounded-3xl shrink-0
+            fixed lg:static shrink-0
             ${sidebarOpen ? 'w-64' : 'w-20'}
-            ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-[calc(100%+2rem)] lg:translate-x-0'}
+            ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
           `}
         >
           {/* Navigation */}
@@ -172,7 +171,7 @@ export default function Layout() {
                   className={`
                     flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative
                     ${isActive
-                      ? 'bg-white/15 backdrop-blur-sm text-white shadow-lg shadow-brand-950/20 border border-white/20 dark:bg-brand-600 dark:border-brand-500/50'
+                      ? 'bg-white/15 backdrop-blur-sm text-white shadow-lg shadow-brand-900/20 border border-white/20 dark:bg-brand-600 dark:border-brand-500/50'
                       : 'text-brand-200/70 dark:text-night-300 hover:bg-white/10 dark:hover:bg-night-800 hover:text-white dark:hover:text-white'
                     }
                     ${!sidebarOpen ? 'justify-center px-0' : ''}
@@ -194,7 +193,7 @@ export default function Layout() {
           </nav>
 
           {/* Footer Sidebar */}
-          <div className="p-4 border-t border-brand-700/40 dark:border-night-700 bg-brand-950/30 dark:bg-night-900/80 rounded-b-[calc(1.5rem-1px)]">
+          <div className="p-4 border-t border-brand-700/40 dark:border-night-700 bg-brand-900/30 dark:bg-night-900/80">
             <div className={`flex items-center gap-3 ${!sidebarOpen ? 'flex-col' : ''}`}>
               <div className="relative group cursor-pointer">
                 <div className="w-10 h-10 rounded-xl bg-white/15 dark:bg-gradient-to-b dark:from-night-700 dark:to-night-800 flex items-center justify-center font-bold text-white dark:text-night-300 transition-all group-hover:shadow-md border border-white/20 dark:border-transparent">

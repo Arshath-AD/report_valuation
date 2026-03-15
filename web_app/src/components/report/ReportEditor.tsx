@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Save, Check, Sparkles, MessageSquare, ChevronLeft } from 'lucide-react';
+import { Save, Check, Sparkles, MessageSquare, ChevronLeft, Edit2, Eye } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { ValuationReport } from '../../types';
 import { formatDate } from '../../utils/formatDate';
 
@@ -18,6 +20,7 @@ export default function ReportEditor({ report, onBack, onSave, onApprove }: Repo
         finalValuation: '',
     });
     const [activeSection, setActiveSection] = useState<keyof typeof content>('summary');
+    const [editMode, setEditMode] = useState(false);
 
     // Sync content when report data is loaded asynchronously
     useEffect(() => {
@@ -46,6 +49,11 @@ export default function ReportEditor({ report, onBack, onSave, onApprove }: Repo
 
     const handleSectionUpdate = (section: keyof typeof content, value: string) => {
         setContent((prev) => ({ ...prev, [section]: value }));
+    };
+
+    const handleSectionSelect = (key: keyof typeof content) => {
+        setActiveSection(key);
+        setEditMode(false);
     };
 
     const handleSave = () => {
@@ -129,7 +137,7 @@ export default function ReportEditor({ report, onBack, onSave, onApprove }: Repo
                         {sections.map((section) => (
                             <button
                                 key={section.key}
-                                onClick={() => setActiveSection(section.key)}
+                                onClick={() => handleSectionSelect(section.key)}
                                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeSection === section.key
                                     ? 'bg-brand-50 text-brand-700 font-medium'
                                     : 'text-secondary-700 hover:bg-secondary-50'
@@ -154,16 +162,49 @@ export default function ReportEditor({ report, onBack, onSave, onApprove }: Repo
                             </div>
                         </div>
 
-                        <div className="bg-white border border-secondary-200 rounded-lg p-6">
-                            <h2 className="text-xl font-semibold text-secondary-900 mb-4">
-                                {sections.find((s) => s.key === activeSection)?.label}
-                            </h2>
-                            <textarea
-                                value={content[activeSection]}
-                                onChange={(e) => handleSectionUpdate(activeSection, e.target.value)}
-                                className="w-full h-96 p-4 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-none font-mono text-sm"
-                                placeholder={`Enter ${sections.find((s) => s.key === activeSection)?.label.toLowerCase()}...`}
-                            />
+                        <div className="bg-white border border-secondary-200 rounded-lg p-6 min-h-[500px] flex flex-col">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-xl font-semibold text-secondary-900">
+                                    {sections.find((s) => s.key === activeSection)?.label}
+                                </h2>
+                                <div className="flex items-center bg-secondary-100 rounded-lg p-1">
+                                    <button
+                                        onClick={() => setEditMode(true)}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${editMode ? 'bg-white text-secondary-900 shadow-sm' : 'text-secondary-600 hover:text-secondary-900'
+                                            }`}
+                                    >
+                                        <Edit2 size={16} />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => setEditMode(false)}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${!editMode ? 'bg-white text-secondary-900 shadow-sm' : 'text-secondary-600 hover:text-secondary-900'
+                                            }`}
+                                    >
+                                        <Eye size={16} />
+                                        Preview
+                                    </button>
+                                </div>
+                            </div>
+
+                            {editMode ? (
+                                <textarea
+                                    value={content[activeSection]}
+                                    onChange={(e) => handleSectionUpdate(activeSection, e.target.value)}
+                                    className="flex-1 w-full p-4 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none resize-none font-mono text-sm"
+                                    placeholder={`Enter ${sections.find((s) => s.key === activeSection)?.label.toLowerCase()}...`}
+                                />
+                            ) : (
+                                <div className="flex-1 w-full p-4 border border-secondary-300 bg-secondary-50 prose prose-secondary max-w-none overflow-auto rounded-lg prose-headings:font-semibold prose-sm sm:prose-base prose-p:my-2 prose-headings:my-4 prose-hr:my-6 prose-ul:my-2 text-secondary-900 prose-headings:text-secondary-900">
+                                    {content[activeSection] ? (
+                                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                            {content[activeSection]}
+                                        </ReactMarkdown>
+                                    ) : (
+                                        <p className="text-secondary-400 italic font-sans">No content yet. Switch to Edit mode to add some.</p>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

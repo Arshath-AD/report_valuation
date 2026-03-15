@@ -22,11 +22,13 @@ export function mapApiReportToValuation(apiData: any): ValuationReport {
         location: { value: 'Chennai, Tamil Nadu', aiConfidence: 'high' as const, needsReview: false },
     };
 
-    let summary = '';
-    if (Array.isArray(analysis?.ai_report_content)) {
-        summary = analysis.ai_report_content.map((item: any) => item.legal_english || item.simple_english || '').join('\n\n---\n\n');
-    } else {
-        summary = analysis?.ai_report_content || '';
+    let summary = analysis?.summary || '';
+    if (!summary) {
+        if (Array.isArray(analysis?.ai_report_content)) {
+            summary = analysis.ai_report_content.map((item: any) => item.legal_english || item.simple_english || '').join('\n\n---\n\n');
+        } else {
+            summary = analysis?.ai_report_content || '';
+        }
     }
 
     const content = {

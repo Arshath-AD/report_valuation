@@ -560,10 +560,14 @@ async def get_report_analysis(
         raise HTTPException(status_code=403, detail="Access denied")
 
     analysis_doc = AIExtractedContentRepository.get_by_report(report_id)
+    analysis_content = None
+    if analysis_doc:
+        analysis_content = analysis_doc.get("summary") or analysis_doc.get("ai_report_content")
+        
     return {
         "report_id": report_id,
         "report_name": report.get("report_name", ""),
-        "analysis": analysis_doc["ai_report_content"] if analysis_doc else None,
+        "analysis": analysis_content,
     }
 
 
@@ -642,7 +646,7 @@ async def download_report_pdf(
         else:
              raise HTTPException(status_code=404, detail="No content found to analyze")
     else:
-        analysis_content = analysis_doc["ai_report_content"]
+        analysis_content = analysis_doc.get("summary") or analysis_doc.get("ai_report_content")
 
     pdf_bytes = processing_service.generate_pdf(
         title=report["report_name"],

@@ -219,21 +219,19 @@ class AIExtractedContentRepository:
     @staticmethod
     def save_analysis(report_id: str, content: str, created_by: str = None) -> dict:
         """Save AI analysis result"""
-        doc = {
-            "report_id": ObjectId(report_id),
-            "ai_report_content": content,
-            "created_at": datetime.utcnow()
+        doc_update = {
+            "summary": content,
+            "updated_at": datetime.utcnow()
         }
-        # Upsert - if analysis already exists for report, replace it? 
-        # Or store history? For now, we'll just insert new. 
-        # Actually to keep it simple let's delete old one first if we want 1-to-1
-        ai_extracted_content.delete_many({"report_id": ObjectId(report_id)})
         
-        result = ai_extracted_content.insert_one(doc)
+        result = ai_extracted_content.update_one(
+            {"report_id": ObjectId(report_id)},
+            {"$set": doc_update},
+            upsert=True
+        )
         return {
-            "id": str(result.inserted_id),
             "report_id": report_id,
-            "ai_report_content": content
+            "summary": content
         }
 
     @staticmethod

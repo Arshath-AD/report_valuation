@@ -266,7 +266,7 @@ export default function Upload() {
       const response = await reportsApi.uploadFiles(effectiveReportId, newFiles);
 
       if (response && ((response as any).success || (response as any).files)) {
-        const serverFiles = (response as any).files || (response as any).documents || [];
+        const serverFiles = (response as any).files || [];
 
         setFiles((prev) =>
           prev.map((f) => {

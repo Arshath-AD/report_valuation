@@ -157,19 +157,17 @@ export const reportsApi = {
     }>(`/api/v1/reports/${reportId}/status`),
 
   /**
-   * Upload files to a report
-   * POST /api/v1/documents/process-multiple
+   * Upload files to a report (upload only, no processing)
+   * POST /api/v1/reports/{reportId}/files
    */
   uploadFiles: (reportId: string, files: File[]) => {
     const formData = new FormData();
     files.forEach((file) => {
       formData.append('files', file);
     });
-    formData.append('client_name', 'Client'); // Default client name required by backend
-    formData.append('report_id', reportId);
 
-    return apiClient.post<{ success: boolean; documents: any[] }>(
-      `/api/v1/documents/process-multiple`,
+    return apiClient.post<{ success: boolean; files: { id: string; file_name: string }[] }>(
+      `/api/v1/reports/${reportId}/files`,
       formData
     );
   },

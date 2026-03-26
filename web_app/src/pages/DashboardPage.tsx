@@ -257,7 +257,7 @@ export default function DashboardPage() {
                         className="cursor-pointer group bg-white rounded-xl border border-brand-100 p-6 shadow-lg hover:shadow-2xl hover:shadow-brand-200/40 transition-all duration-500 relative overflow-hidden hover:border-brand-200 isolate"
                         style={{ animationDelay: `${index * 100}ms` }}
                     >
-                        <div className="flex items-start justify-between relative z-10">
+                        <div className="flex items-start justify-between gap-3 relative z-10">
                             <div className={`${card.bg} ${card.color} ${card.border} p-4 rounded-xl border group-hover:scale-110 transition-transform duration-500 shadow-md`}>
                                 {React.cloneElement(card.icon as React.ReactElement, { size: 24 })}
                             </div>

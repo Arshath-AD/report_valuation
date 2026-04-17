@@ -106,6 +106,15 @@ export const reportsApi = {
     ),
 
   /**
+   * Cancel in-progress processing and revert report to its previous state
+   * POST /api/v1/reports/{report_id}/cancel
+   */
+  cancelProcessing: (reportId: string) =>
+    apiClient.post<{ success: boolean; report_id: string; message: string }>(
+      `/api/v1/reports/${reportId}/cancel`
+    ),
+
+  /**
    * Analyze report (triggers new AI analysis — expensive)
    * POST /api/v1/reports/analysis
    */

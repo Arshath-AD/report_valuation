@@ -316,6 +316,106 @@ async def import_report_files(
     }
 
 
+@router.post("/reports/{report_id}/cancel")
+async def cancel_report_processing(
+    report_id: str,
+    current_user: dict = Depends(get_current_user),
+):
+    """
+    Cancel an in-progress report processing run.
+
+    Actions performed:
+    1. Revoke all in-flight / queued Celery tasks for this report's files.
+    2. Reset every original_file's processing_status → 'pending' and clear file_content.
+    3. Delete any partially-generated AI extracted content for this report.
+    4. Roll the report status back to 'process' (files are still attached, ready to re-try).
+    """
+    from app.celery_app import celery_app as _celery
+    from app.db.session import original_files as orig_col, ai_extracted_content as ai_col
+    from bson import ObjectId
+    from datetime import datetime as _dt
+
+    # --- Validate ownership ---
+    report = ReportRepository.get_by_id(report_id)
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+
+    if (
+        report["user_id"] != current_user["id"]
+        and "admin" not in current_user.get("roles", [])
+    ):
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    # Only allow cancel while actively processing / importing
+    allowed_statuses = {"importing", "process", "processing"}
+    if report.get("report_status") not in allowed_statuses:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot cancel a report in '{report.get('report_status')}' state. "
+                   "Only reports that are currently processing can be cancelled."
+        )
+
+    files = OriginalFileRepository.get_by_report(report_id)
+
+    revoked = []
+    for file_doc in files:
+        file_id = file_doc["id"]
+
+        # 1. Revoke the Celery task (task_id == file_id by our convention in import endpoint)
+        try:
+            _celery.control.revoke(file_id, terminate=True, signal="SIGTERM")
+            revoked.append(file_id)
+            logger.info("Revoked Celery task for file %s", file_id)
+        except Exception as exc:
+            logger.warning("Could not revoke task for file %s: %s", file_id, exc)
+
+        # 1.5 Delete the physically generated translated PDF (if any)
+        output_pdf_path = file_doc.get("output_pdf_path")
+        if output_pdf_path and os.path.exists(output_pdf_path):
+            try:
+                os.remove(output_pdf_path)
+                logger.info("Deleted physically extracted file: %s", output_pdf_path)
+            except Exception as e:
+                logger.error("Failed to delete physical extracted file %s: %s", output_pdf_path, e)
+
+        # 2. Reset this file's processing status and clear extracted content
+        orig_col.update_one(
+            {"_id": ObjectId(file_id)},
+            {
+                "$set": {
+                    "processing_status": "pending",
+                    "file_content": None,
+                    "output_pdf_path": None,
+                    "error_message": None,
+                    "total_pages": None,
+                    "current_page": None,
+                    "processed_pages": None,
+                    "summary": None,
+                    "completed_at": None,
+                    "updated_at": _dt.utcnow(),
+                }
+            },
+        )
+
+    # 3. Remove partially-generated AI content
+    deleted_ai = ai_col.delete_many({"report_id": ObjectId(report_id)})
+    logger.info(
+        "Deleted %d ai_extracted_content docs for report %s",
+        deleted_ai.deleted_count,
+        report_id,
+    )
+
+    # 4. Roll back report status → 'process' (files still attached)
+    ReportRepository.update_status(report_id, "process")
+    logger.info("Report %s rolled back to 'process' status after cancel", report_id)
+
+    return {
+        "success": True,
+        "report_id": report_id,
+        "revoked_tasks": revoked,
+        "message": "Processing cancelled. Report has been reset to its previous state.",
+    }
+
 
 @router.post("/reports/analysis")
 async def analyze_and_summarize(

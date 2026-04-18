@@ -19,33 +19,33 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
                 <p className="text-slate-500">Manage your team members and their permissions.</p>
             </div>
 
-            <div className="flex flex-wrap gap-8 justify-evenly mb-8 w-full px-12">
-                <div className="group bg-white rounded-lg border border-brand-100 p-6 shadow-lg hover:shadow-xl hover:shadow-brand-200/40 transition-all duration-500 relative overflow-hidden flex flex-col items-center justify-center text-center aspect-square isolate w-full max-w-[14rem]">
-                    <div className="w-14 h-14 rounded-lg bg-sky-50 flex items-center justify-center text-sky-600 mb-4 group-hover:scale-110 transition-transform duration-500">
+            <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="group bg-white rounded-xl border border-brand-100 px-6 py-4 shadow-lg hover:shadow-xl hover:shadow-brand-200/40 transition-all duration-500 flex flex-row items-center gap-5 h-36">
+                    <div className="w-14 h-14 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600 shrink-0 group-hover:scale-110 transition-transform duration-500">
                         <Users size={28} />
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Total Users</p>
+                        <p className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Total Users</p>
                         <p className="text-4xl font-black text-slate-900">{totalUsers}</p>
                     </div>
                 </div>
 
-                <div className="group bg-white rounded-lg border border-brand-100 p-6 shadow-lg hover:shadow-xl hover:shadow-brand-200/40 transition-all duration-500 relative overflow-hidden flex flex-col items-center justify-center text-center aspect-square isolate w-full max-w-[14rem]">
-                    <div className="w-14 h-14 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform duration-500">
+                <div className="group bg-white rounded-xl border border-brand-100 px-6 py-4 shadow-lg hover:shadow-xl hover:shadow-brand-200/40 transition-all duration-500 flex flex-row items-center gap-5 h-36">
+                    <div className="w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center text-purple-600 shrink-0 group-hover:scale-110 transition-transform duration-500">
                         <Shield size={28} />
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Active Roles</p>
+                        <p className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Active Roles</p>
                         <p className="text-4xl font-black text-slate-900">{rolesCount}</p>
                     </div>
                 </div>
 
-                <div className="group bg-white rounded-lg border border-brand-100 p-6 shadow-lg hover:shadow-xl hover:shadow-brand-200/40 transition-all duration-500 relative overflow-hidden flex flex-col items-center justify-center text-center aspect-square isolate w-full max-w-[14rem]">
-                    <div className="w-14 h-14 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 mb-4 group-hover:scale-110 transition-transform duration-500">
+                <div className="group bg-white rounded-xl border border-brand-100 px-6 py-4 shadow-lg hover:shadow-xl hover:shadow-brand-200/40 transition-all duration-500 flex flex-row items-center gap-5 h-36">
+                    <div className="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-110 transition-transform duration-500">
                         <UserPlus size={28} />
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-slate-500 mb-1 uppercase tracking-wider">Administrators</p>
+                        <p className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Administrators</p>
                         <p className="text-4xl font-black text-slate-900">{adminsCount}</p>
                     </div>
                 </div>

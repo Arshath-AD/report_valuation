@@ -250,7 +250,7 @@ export default function UploadStep({
                 flex items-center justify-center gap-2
                 shadow-md hover:shadow-lg transition"
               >
-                Upload
+                Upload & Quit
               </button>
               <button
                 onClick={onNext}

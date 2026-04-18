@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
   { path: '/upload', label: 'Upload & Process', icon: <Upload size={20} /> },
   { path: '/files', label: 'File Management', icon: <FolderTree size={20} /> },
   { path: '/banks', label: 'Bank Management', icon: <Landmark size={20} /> },
-  { path: '/users', label: 'Users', icon: <Users size={20} /> },
+  { path: '/users', label: 'Users', icon: <Users size={20} />, roles: ['admin'] },
 ];
 
 export default function Layout() {

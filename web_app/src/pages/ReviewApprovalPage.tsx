@@ -11,7 +11,7 @@ import {
   Sparkles,
   RotateCcw,
   X,
-
+  Download,
 } from 'lucide-react';
 
 import { ReportStatus } from '../types';
@@ -19,6 +19,7 @@ import { formatDate } from '../utils/formatDate';
 import { useReport, useUpdateReport } from '../hooks/useReports';
 import { mapApiReportToValuation } from '../utils/reportMapper';
 import { reportsApi } from '../apis/report.api';
+import { exportToPDF, exportToDOCX } from '../utils/exportReport';
 import Skeleton from 'react-loading-skeleton';
 
 export default function ReviewApprovalPage() {
@@ -31,6 +32,7 @@ export default function ReviewApprovalPage() {
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isExporting, setIsExporting] = useState<'pdf' | 'docx' | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -47,9 +49,21 @@ export default function ReviewApprovalPage() {
 
   const handleBack = () => navigate(-1);
 
-  const handleExport = (format: 'pdf' | 'docx') => {
-    if (report) {
-      alert(`Exporting ${report.customerName}'s report as ${format.toUpperCase()}`);
+  const handleExport = async (format: 'pdf' | 'docx') => {
+    if (!report) return;
+    setIsExporting(format);
+    try {
+      if (format === 'pdf') {
+        await exportToPDF(report);
+      } else {
+        await exportToDOCX(report);
+      }
+      showToast(`${format.toUpperCase()} downloaded successfully!`);
+    } catch (err) {
+      console.error('Export failed:', err);
+      showToast(`Failed to export ${format.toUpperCase()}. Please try again.`, 'error');
+    } finally {
+      setIsExporting(null);
     }
   };
 
@@ -232,18 +246,24 @@ export default function ReviewApprovalPage() {
               Audit Trail
             </button>
 
-            {/* Export */}
+            {/* Export PDF */}
             <button
               onClick={() => handleExport('pdf')}
-              className="flex items-center gap-2 px-4 py-2 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors font-medium shadow-sm"
+              disabled={isExporting !== null}
+              className="flex items-center gap-2 px-4 py-2 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors font-medium shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Export PDF
+              <Download size={16} />
+              {isExporting === 'pdf' ? 'Generating PDF...' : 'Export PDF'}
             </button>
+
+            {/* Export DOCX */}
             <button
               onClick={() => handleExport('docx')}
-              className="flex items-center gap-2 px-4 py-2 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors font-medium shadow-sm"
+              disabled={isExporting !== null}
+              className="flex items-center gap-2 px-4 py-2 bg-brand-50 text-brand-700 border border-brand-200 rounded-lg hover:bg-brand-100 transition-colors font-medium shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Export DOCX
+              <Download size={16} />
+              {isExporting === 'docx' ? 'Generating DOCX...' : 'Export DOCX'}
             </button>
 
             {/* Conditional: Rollback to Review (approved) or Approve (review) */}

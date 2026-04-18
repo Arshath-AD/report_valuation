@@ -314,6 +314,22 @@ export default function Upload() {
     startPolling(effectiveReportId);
   };
 
+  const handleCancelProcessing = async () => {
+    const effectiveReportId = reportId || urlReportId;
+    if (!effectiveReportId) return;
+
+    if (pollingRef.current) clearInterval(pollingRef.current);
+
+    try {
+      await reportsApi.cancelProcessing(effectiveReportId);
+      setCurrentStep(3); // Go back to File Selection
+    } catch (error) {
+      console.error('Cancel failed:', error);
+      startPolling(effectiveReportId);
+      throw error; // Let UI know it failed
+    }
+  };
+
   const handleCreateProject = () => {
     const effectiveReportId = reportId || urlReportId;
     if (!effectiveReportId) {
@@ -471,6 +487,7 @@ export default function Upload() {
                   return copyToClipboard(shareUrl);
                 }}
                 onGoHome={() => navigate('/')}
+                onCancel={handleCancelProcessing}
               />
             )}
 

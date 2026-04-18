@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Loader2, CheckCircle2, Copy, Home } from 'lucide-react';
+import { Loader2, CheckCircle2, Copy, Home, XCircle, AlertTriangle } from 'lucide-react';
 import { UploadedFile } from './types';
+import toast from 'react-hot-toast';
 
 interface ProcessingStepProps {
     files: UploadedFile[];
@@ -8,6 +9,7 @@ interface ProcessingStepProps {
     progress?: { completed: number; total: number; percentage: number };
     onCopyLink?: () => Promise<boolean | void>;
     onGoHome?: () => void;
+    onCancel?: () => Promise<void>;
 }
 
 export default function ProcessingStep({
@@ -16,12 +18,30 @@ export default function ProcessingStep({
     progress,
     onCopyLink,
     onGoHome,
+    onCancel,
 }: ProcessingStepProps) {
     const pct = progress ? Math.round(progress.percentage) : 0;
     const done = progress?.completed ?? 0;
     const total = progress?.total ?? selectedFiles.length;
 
     const [copied, setCopied] = useState(false);
+    const [showCancelDialog, setShowCancelDialog] = useState(false);
+    const [isCancelling, setIsCancelling] = useState(false);
+
+    const handleConfirmCancel = async () => {
+        if (!onCancel) return;
+        setIsCancelling(true);
+        try {
+            await onCancel();
+            toast.success('Processing cancelled successfully.');
+            // onCancel unmounts this component, so we don't need to do much more
+        } catch (error: any) {
+            toast.error(error?.message || 'Cancel failed. Please try again.');
+        } finally {
+            setIsCancelling(false);
+            setShowCancelDialog(false);
+        }
+    };
 
 
 
@@ -111,6 +131,19 @@ export default function ProcessingStep({
                             Go to Dashboard
                         </button>
                     </div>
+
+                    {/* Cancel Processing Button */}
+                    {onCancel && (
+                        <div className="pt-2 pb-6 border-slate-100">
+                            <button
+                                onClick={() => setShowCancelDialog(true)}
+                                className="w-full flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl text-red-500 font-semibold hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
+                            >
+                                <XCircle size={18} />
+                                Cancel Processing
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 {/* Per-file list */}
@@ -159,6 +192,63 @@ export default function ProcessingStep({
                 <span className="w-2 h-2 bg-sky-500 rounded-full shrink-0 animate-pulse" />
                 Processing is active — The wizard will auto-advance when done
             </p>
+
+            {/* ── Cancel Confirmation Modal ──────────────────────────────────── */}
+            {showCancelDialog && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    style={{ background: 'rgba(15, 23, 42, 0.55)', backdropFilter: 'blur(4px)' }}
+                >
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-in zoom-in-95 duration-200 relative">
+                        {/* Warning icon */}
+                        <div className="mx-auto mb-5 w-16 h-16 flex items-center justify-center rounded-full bg-red-50">
+                            <AlertTriangle size={32} className="text-red-500" />
+                        </div>
+
+                        <h3 className="text-xl font-bold text-slate-900 text-center mb-2">
+                            Cancel Processing?
+                        </h3>
+
+                        <p className="text-slate-500 text-center text-sm mb-1">
+                            This will{' '}
+                            <span className="font-semibold text-slate-700">
+                                stop all in-progress AI analysis
+                            </span>{' '}
+                            and revert the report to its state before processing started.
+                        </p>
+                        <p className="text-slate-500 text-center text-sm mb-7">
+                            Your uploaded files will remain attached so you can try again later.
+                        </p>
+
+                        <div className="flex flex-col gap-3">
+                            <button
+                                onClick={handleConfirmCancel}
+                                disabled={isCancelling}
+                                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all shadow-md shadow-red-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {isCancelling ? (
+                                    <>
+                                        <Loader2 size={18} className="animate-spin" />
+                                        Cancelling...
+                                    </>
+                                ) : (
+                                    <>
+                                        <XCircle size={18} />
+                                        Yes, Cancel Processing
+                                    </>
+                                )}
+                            </button>
+                            <button
+                                onClick={() => setShowCancelDialog(false)}
+                                disabled={isCancelling}
+                                className="w-full px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                Keep Processing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

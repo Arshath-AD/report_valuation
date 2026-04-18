@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     Loader2,
@@ -7,12 +7,14 @@ import {
     Copy,
     Home,
     ChevronRight,
-    RefreshCw
+    RefreshCw,
+    XCircle,
+    AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { reportsApi } from '../apis/report.api';
 
-type StatusState = 'processing' | 'completed' | 'failed' | 'timeout';
+type StatusState = 'processing' | 'completed' | 'failed' | 'timeout' | 'cancelled';
 
 export default function ProcessingPage() {
     const { reportId } = useParams<{ reportId: string }>();
@@ -24,17 +26,22 @@ export default function ProcessingPage() {
     const [errorDetails, setErrorDetails] = useState<string | null>(null);
     const [isCopied, setIsCopied] = useState(false);
 
+    // Cancel confirmation dialog state
+    const [showCancelDialog, setShowCancelDialog] = useState(false);
+    const [isCancelling, setIsCancelling] = useState(false);
+
+    // Ref so the polling interval immediately stops when cancel fires
+    const cancelledRef = useRef(false);
+
     const pollStatus = useCallback(async () => {
-        if (!reportId) return;
+        if (!reportId || cancelledRef.current) return;
 
         try {
             const data = await reportsApi.getReportStatus(reportId);
-
             setProgress(data.progress);
 
             if (data.status === 'completed') {
                 setStatus('completed');
-                // Auto-redirect after a short delay
                 setTimeout(() => {
                     navigate(`/reports/${reportId}/edit`);
                 }, 2000);
@@ -44,21 +51,23 @@ export default function ProcessingPage() {
                 setErrorHeader('Processing failed');
                 setErrorDetails(failedFile?.error || 'An unexpected error occurred during analysis.');
             } else {
-                // Keep processing
                 setStatus('processing');
             }
         } catch (err: any) {
             console.error('Polling error:', err);
-            // Don't show error popup early per requirements
         }
     }, [reportId, navigate]);
 
     useEffect(() => {
         if (status !== 'processing') return;
 
-        const startTime = new Date().getTime();
+        const startTime = Date.now();
         const interval = setInterval(() => {
-            if (new Date().getTime() > startTime + 10 * 60 * 1000) { // 10 minutes timeout
+            if (cancelledRef.current) {
+                clearInterval(interval);
+                return;
+            }
+            if (Date.now() > startTime + 10 * 60 * 1000) {
                 setStatus('timeout');
                 clearInterval(interval);
             } else {
@@ -70,25 +79,51 @@ export default function ProcessingPage() {
     }, [status, pollStatus]);
 
     const handleCopyLink = () => {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url);
+        navigator.clipboard.writeText(window.location.href);
         setIsCopied(true);
         toast.success('Link copied to clipboard');
         setTimeout(() => setIsCopied(false), 2000);
     };
 
-    const handleGoHome = () => navigate('/');
+    const handleGoHome  = () => navigate('/');
     const handleTryAgain = () => navigate('/upload');
-    const handleRefresh = () => {
+    const handleRefresh  = () => {
+        cancelledRef.current = false;
         setStatus('processing');
         pollStatus();
+    };
+
+    // ── Cancel flow ──────────────────────────────────────────────────────────
+    const handleCancelClick   = () => setShowCancelDialog(true);
+    const handleCancelDismiss = () => setShowCancelDialog(false);
+
+    const handleConfirmCancel = async () => {
+        if (!reportId) return;
+        setIsCancelling(true);
+
+        // Stop the polling loop immediately
+        cancelledRef.current = true;
+
+        try {
+            await reportsApi.cancelProcessing(reportId);
+            toast.success('Processing cancelled. Your report has been reset.');
+            setShowCancelDialog(false);
+            setStatus('cancelled');
+        } catch (err: any) {
+            console.error('Cancel failed:', err);
+            toast.error(err?.message || 'Failed to cancel. Please try again.');
+            // Re-enable polling so the user can still see progress
+            cancelledRef.current = false;
+        } finally {
+            setIsCancelling(false);
+        }
     };
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center p-6">
             <div className="max-w-xl w-full bg-white rounded-3xl shadow-2xl border border-slate-100 p-8 md:p-12 text-center transition-all">
 
-                {/* STATE: PROCESSING */}
+                {/* ── STATE: PROCESSING ─────────────────────────────────────────── */}
                 {status === 'processing' && (
                     <div className="space-y-8 animate-in fade-in duration-500">
                         <div className="relative mx-auto w-24 h-24">
@@ -125,12 +160,15 @@ export default function ProcessingPage() {
                             </div>
                         </div>
 
+                        {/* Action buttons */}
                         <div className="flex flex-col sm:flex-row gap-3 pt-4">
                             <button
                                 onClick={handleCopyLink}
                                 className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-sky-50 text-sky-600 font-semibold hover:bg-sky-100 transition-all border border-sky-100"
                             >
-                                {isCopied ? <CheckCircle2 size={18} className="text-green-500" /> : <Copy size={18} />}
+                                {isCopied
+                                    ? <CheckCircle2 size={18} className="text-green-500" />
+                                    : <Copy size={18} />}
                                 {isCopied ? 'Copied!' : 'Copy Link'}
                             </button>
                             <button
@@ -141,10 +179,22 @@ export default function ProcessingPage() {
                                 Go to Home
                             </button>
                         </div>
+
+                        {/* ── Cancel button ── */}
+                        <div className="pt-2 border-t border-slate-100">
+                            <button
+                                id="cancel-processing-btn"
+                                onClick={handleCancelClick}
+                                className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-red-500 font-semibold hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
+                            >
+                                <XCircle size={18} />
+                                Cancel Processing
+                            </button>
+                        </div>
                     </div>
                 )}
 
-                {/* STATE: COMPLETED */}
+                {/* ── STATE: COMPLETED ──────────────────────────────────────────── */}
                 {status === 'completed' && (
                     <div className="space-y-8 animate-in zoom-in-95 duration-500">
                         <div className="mx-auto w-24 h-24 bg-green-50 rounded-full flex items-center justify-center">
@@ -174,7 +224,7 @@ export default function ProcessingPage() {
                     </div>
                 )}
 
-                {/* STATE: FAILED */}
+                {/* ── STATE: FAILED ─────────────────────────────────────────────── */}
                 {status === 'failed' && (
                     <div className="space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                         <div className="mx-auto w-24 h-24 bg-red-50 rounded-full flex items-center justify-center">
@@ -207,7 +257,7 @@ export default function ProcessingPage() {
                     </div>
                 )}
 
-                {/* STATE: TIMEOUT */}
+                {/* ── STATE: TIMEOUT ────────────────────────────────────────────── */}
                 {status === 'timeout' && (
                     <div className="space-y-8 animate-in fade-in duration-500">
                         <div className="mx-auto w-24 h-24 bg-amber-50 rounded-full flex items-center justify-center">
@@ -240,7 +290,101 @@ export default function ProcessingPage() {
                         </div>
                     </div>
                 )}
+
+                {/* ── STATE: CANCELLED ──────────────────────────────────────────── */}
+                {status === 'cancelled' && (
+                    <div className="space-y-8 animate-in zoom-in-95 duration-500">
+                        <div className="mx-auto w-24 h-24 bg-slate-100 rounded-full flex items-center justify-center">
+                            <XCircle size={48} className="text-slate-400" />
+                        </div>
+
+                        <div className="space-y-2">
+                            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+                                Processing Cancelled
+                            </h2>
+                            <p className="text-slate-500">
+                                Your report has been reset to its previous state.
+                                Your uploaded files are still attached — you can try again any time.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-3 pt-4">
+                            <button
+                                onClick={() => navigate(`/upload/${reportId}`)}
+                                className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-sky-500 text-white font-bold hover:bg-sky-600 transition-all shadow-lg shadow-sky-200"
+                            >
+                                <RefreshCw size={18} />
+                                Go Back &amp; Try Again
+                            </button>
+                            <button
+                                onClick={handleGoHome}
+                                className="w-full px-4 text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors"
+                            >
+                                Return to Home
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
+
+            {/* ── Cancel Confirmation Modal ──────────────────────────────────── */}
+            {showCancelDialog && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    style={{ background: 'rgba(15, 23, 42, 0.55)', backdropFilter: 'blur(4px)' }}
+                >
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-in zoom-in-95 duration-200">
+                        {/* Warning icon */}
+                        <div className="mx-auto mb-5 w-16 h-16 flex items-center justify-center rounded-full bg-red-50">
+                            <AlertTriangle size={32} className="text-red-500" />
+                        </div>
+
+                        <h3 className="text-xl font-bold text-slate-900 text-center mb-2">
+                            Cancel Processing?
+                        </h3>
+
+                        <p className="text-slate-500 text-center text-sm mb-1">
+                            This will{' '}
+                            <span className="font-semibold text-slate-700">
+                                stop all in-progress AI analysis
+                            </span>{' '}
+                            and revert the report to its state before processing started.
+                        </p>
+                        <p className="text-slate-500 text-center text-sm mb-7">
+                            Your uploaded files will remain attached so you can try again later.
+                        </p>
+
+                        <div className="flex flex-col gap-3">
+                            <button
+                                id="confirm-cancel-btn"
+                                onClick={handleConfirmCancel}
+                                disabled={isCancelling}
+                                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 transition-all shadow-md shadow-red-100 disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                {isCancelling ? (
+                                    <>
+                                        <Loader2 size={18} className="animate-spin" />
+                                        Cancelling...
+                                    </>
+                                ) : (
+                                    <>
+                                        <XCircle size={18} />
+                                        Yes, Cancel Processing
+                                    </>
+                                )}
+                            </button>
+                            <button
+                                id="keep-processing-btn"
+                                onClick={handleCancelDismiss}
+                                disabled={isCancelling}
+                                className="w-full px-6 py-3 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                Keep Processing
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
